@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">ARA-монитор</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Настройки</string>
+    <string name="action_exit">Выход</string>
+    <string name="button_update">Обновить</string>
+    <string name="action_update">Обновить</string>
+    <string name="button_save_title">Сохранить</string>
+    <string name="connectStringTitle">Строка подключения:</string>
+    <string name="SaveButtonTitle">Подключиться</string>
+    <string name="settings_title">Настройки</string>
+    <string name="authCheckBoxTitle">Требуется авторизация</string>
+
+</resources>
