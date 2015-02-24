@@ -12,5 +12,15 @@
     <string name="SaveButtonTitle">Подключиться</string>
     <string name="settings_title">Настройки</string>
     <string name="authCheckBoxTitle">Требуется авторизация</string>
+    <string name="about_text" formatted="false"> <![CDATA[
+        <center><h3"><b>ProjectARA клиент</b></h3>
+        <p align="center">версия: 1.0</p>
+        <p align="center">Клиент бесплатной системы мониторинга устройств ProjectARA</p></center>
+        <p style="margin-left: 40px;"><b>Автор</b>: GebekovAS<br>
+        <b>Почта</b>: gebekovas@yandex.ru<br>
+        <b>Сайт</b>: <a href="http://www.gebekovas.ru">www.gebekovas.ru</a></p>
+        ]]> </string>
+    <string name="aboutBtnOk_Title">Ok</string>
+    <string name="action_about">О программе</string>
 
 </resources>

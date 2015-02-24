@@ -2,6 +2,7 @@ package com.example.aramonitorclient.app;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -47,6 +48,8 @@ public class MainActivity extends ActionBarActivity {
     public static final String APP_SETTINGS_LOGIN="connect_login";
     public static final String APP_SETTINGS_PASSWORD="connect_password";
 
+    public static final String LOG_KEY="ARA";
+
     //Параметры хранят в себе основные настройки подключения
     public String connectionString="";
     public Boolean connectionUsed=false;
@@ -55,9 +58,11 @@ public class MainActivity extends ActionBarActivity {
 
     //Объект хранения и загрузки данных
     private SharedPreferences araSettings;
+    private ProgressDialog prgDial;
 
     //Метод загружает сохраненые настройки приложения
     private void loadSettings() {
+        Log.d(LOG_KEY,"loadSettings");
         try {
             if (araSettings.contains(APP_SETTINGS_CONNECTSTRING)) {
                 connectionString = araSettings.getString(APP_SETTINGS_CONNECTSTRING, "");
@@ -77,6 +82,8 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected  void onPause() {
         super.onPause();
+
+        Log.d(LOG_KEY,"OnPause");
         try {
             SharedPreferences.Editor editor = araSettings.edit();
             editor.putString(APP_SETTINGS_CONNECTSTRING, connectionString);
@@ -96,9 +103,10 @@ public class MainActivity extends ActionBarActivity {
         super.onResume();
         loadSettings();
 
+        Log.d(LOG_KEY,"OnResume");
         //Если firstRun не инициирован, то это первый запуск
         if (firstRun==null) {
-            Log.d("ARA","firstRun=NULL");
+            Log.d(LOG_KEY,"firstRun=NULL");
             showSettingLayout();
             firstRun=false;
         }
@@ -133,15 +141,28 @@ public class MainActivity extends ActionBarActivity {
         //APP_SETTINGS-это имя группы наших настроек (p.s. их может быть несколько)
         araSettings= getSharedPreferences(APP_SETTINGS,Context.MODE_PRIVATE);
         loadSettings();
+
+        prgDial=new ProgressDialog(this);
+        prgDial.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        prgDial.setIndeterminate(true);
+        prgDial.setCancelable(true);
     }
 
     //Метод вызывает слой(окно) настроек приложения
     public void showSettingLayout() {
+        Log.d(LOG_KEY,"showSettings");
         Intent intent=new Intent(MainActivity.this, SettingsActivity.class);
         intent.putExtra(APP_SETTINGS_CONNECTSTRING,connectionString);
         intent.putExtra(APP_SETTINGS_LOGIN,connectionLogin);
         intent.putExtra(APP_SETTINGS_PASSWORD,connectionPassword);
         intent.putExtra(APP_SETTINGS_USED,connectionUsed);
+        startActivity(intent);
+    }
+
+    //Метод вызывает слой(окно) настроек приложения
+    public void showAboutActivity() {
+        Log.d(LOG_KEY,"showAboutActivity");
+        Intent intent=new Intent(MainActivity.this, AboutActivity.class);
         startActivity(intent);
     }
 
@@ -165,18 +186,23 @@ public class MainActivity extends ActionBarActivity {
         if (id==R.id.action_exit) finish();
         else
         if(id==R.id.action_update) init();
+        else
+        if (id==R.id.action_about) showAboutActivity();
 
         return super.onOptionsItemSelected(item);
     }
 
     //Метод вызывает задачу обновления данных
     private void init() {
+        Log.d(LOG_KEY,"Init");
+        showLoadDialog("идет загрузка данных");
         netManager netObj=new netManager(this,connectionString,connectionUsed,connectionLogin,connectionPassword);
         netObj.execute("");
     }
 
     //Метод обновляет данные списка (данные берет из JSON строки)
      public void viewUpdate(String jsonString) {
+         Log.d(LOG_KEY,"viewUpdate");
          jsonString="["+jsonString+"]";
          final String ITEM_TITLE="TITLE";
          final String ITEM_SUBSTRING="SUBSTRING";
@@ -251,12 +277,15 @@ public class MainActivity extends ActionBarActivity {
              exListView.setAdapter(exListAdapter);
          }
           catch (JSONException e) {
-             e.printStackTrace();
+              Log.d(LOG_KEY,"Errore: "+e.getMessage());
          }
+         hideLoadDialog();
     }
 
     //Метод вызова всплывающих окон
     void showMessage(String Msg) {
+        Log.d(LOG_KEY,"Errore text: "+Msg);
+        /*
         AlertDialog dlg= new AlertDialog.Builder(this).create();
         dlg.setMessage(Msg);
         dlg.setButton("Ok",new DialogInterface.OnClickListener() {
@@ -265,7 +294,18 @@ public class MainActivity extends ActionBarActivity {
 
             }
         });
-        dlg.show();
+        dlg.show();*/
+    }
+
+    protected void showLoadDialog (String Msg) {
+        Log.d(LOG_KEY,"showLoadDialog");
+        prgDial.setMessage(Msg);
+        prgDial.show();
+    }
+
+    protected  void hideLoadDialog() {
+        Log.d(LOG_KEY,"HideLoadDialog");
+        prgDial.hide();
     }
 
 }

@@ -54,8 +54,10 @@ public class netManager extends AsyncTask<String,String,String> {
         //Полученные данные отправляю методу обновления списка
         if (s.length()>0)
             owner.viewUpdate(s);
-        else
+        else {
+            owner.hideLoadDialog();
             owner.showSettingLayout();
+        }
     }
 
     //Метод получения данных GET запросом
